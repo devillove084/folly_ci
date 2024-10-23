@@ -56,7 +56,7 @@ jobs:
       - name: Build and install Folly
         run: |
           cd folly
-          python3 build/fbcode_builder/getdeps.py --allow-system-packages --shared-libs build --src-dir=. folly --no-tests  --project-install-prefix folly:/usr/local
+          python3 build/fbcode_builder/getdeps.py --allow-system-packages build --src-dir=. folly --no-tests  --project-install-prefix folly:/usr/local
           sudo ldconfig
     
       # - name: Verify Folly installation
@@ -67,6 +67,14 @@ jobs:
         run: |
           echo '#include <folly/FBString.h>' > demo.cpp
           echo 'int main() { folly::fbstring hello("Hello, Folly!"); return 0; }' >> demo.cpp
-          g++ demo.cpp -o demo -lfolly
+
+          LIBS="-lfolly -ldouble-conversion -lgflags -lglog -lboost_context -lboost_regex -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lpthread -ldl -levent -lz -llz4 -lsnappy -lzstd -lunwind"
+
+          g++ demo.cpp -o demo \
+            -I/usr/local/include \
+            -L/usr/local/lib \
+            $LIBS \
+            -static
+          # g++ demo.cpp -o demo -lfolly
           ./demo
 
