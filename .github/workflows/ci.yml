@@ -56,7 +56,7 @@ jobs:
       - name: Build and install Folly
         run: |
           cd folly
-          python3 build/fbcode_builder/getdeps.py --allow-system-packages build --src-dir=. folly  --project-install-prefix folly:/usr/local
+          python3 build/fbcode_builder/getdeps.py --allow-system-packages --no-tests build --src-dir=. folly  --project-install-prefix folly:/usr/local
           sudo ldconfig
     
       - name: Verify Folly installation
