@@ -48,12 +48,12 @@ jobs:
       - name: Build and install Folly
         run: |
           cd folly
-          mkdir build
-          cd build
+          mkdir _build
+          cd _build
           cmake ..
           make -j$(nproc)
           sudo make install
-          sudo ldconfig  # 更新共享库缓存
+          sudo ldconfig
 
       - name: Verify Folly installation
         run: |
