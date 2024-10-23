@@ -63,18 +63,50 @@ jobs:
       #   run: |
       #     sudo ldconfig -p | grep folly
 
-      - name: Build and run demo
+      # - name: Build and run demo
+      #   run: |
+      #     echo '#include <folly/FBString.h>' > demo.cpp
+      #     echo 'int main() { folly::fbstring hello("Hello, Folly!"); return 0; }' >> demo.cpp
+
+      #     LIBS="-lfolly -ldouble-conversion -lgflags -lglog -lboost_context -lboost_regex -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lpthread -ldl -levent -lz -llz4 -lsnappy -lzstd -lunwind"
+
+      #     g++ demo.cpp -o demo \
+      #       -I/usr/local/include \
+      #       -L/usr/local/lib \
+      #       $LIBS \
+      #       -static
+      #     # g++ demo.cpp -o demo -lfolly
+      #     ./demo
+      - name: Build and run demo with CMake
         run: |
-          echo '#include <folly/FBString.h>' > demo.cpp
-          echo 'int main() { folly::fbstring hello("Hello, Folly!"); return 0; }' >> demo.cpp
+          mkdir demo
+          cd demo
 
-          LIBS="-lfolly -ldouble-conversion -lgflags -lglog -lboost_context -lboost_regex -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lpthread -ldl -levent -lz -llz4 -lsnappy -lzstd -lunwind"
+          cat <<EOL > CMakeLists.txt
+          cmake_minimum_required(VERSION 3.14)
+          project(FollyDemo)
 
-          g++ demo.cpp -o demo \
-            -I/usr/local/include \
-            -L/usr/local/lib \
-            $LIBS \
-            -static
-          # g++ demo.cpp -o demo -lfolly
+          set(CMAKE_CXX_STANDARD 14)
+
+          find_package(folly REQUIRED)
+
+          add_executable(demo demo.cpp)
+
+          target_link_libraries(demo PRIVATE Folly::folly)
+          EOL
+
+          cat <<EOF > demo.cpp
+          #include <folly/FBString.h>
+
+          int main() {
+              folly::fbstring hello("Hello, Folly!");
+              return 0;
+          }
+          EOF
+
+          mkdir build && cd build
+          cmake ..
+          make -j\$(nproc)
+          
           ./demo
 
