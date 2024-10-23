@@ -23,6 +23,7 @@ jobs:
             gcc \
             g++ \
             libboost-all-dev \
+            libfast-float-dev \
             libdouble-conversion-dev \
             libevent-dev \
             libgflags-dev \
