@@ -1,0 +1,69 @@
+name: Build and Test Folly
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-folly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            cmake \
+            make \
+            gcc \
+            g++ \
+            libboost-all-dev \
+            libdouble-conversion-dev \
+            libevent-dev \
+            libgflags-dev \
+            libgoogle-glog-dev \
+            libssl-dev \
+            libunwind-dev \
+            liblz4-dev \
+            liblzma-dev \
+            zlib1g-dev \
+            libsnappy-dev \
+            binutils-dev \
+            libjemalloc-dev \
+            libiberty-dev \
+            autoconf \
+            libtool \
+            python3-pip
+
+      - name: Clone Folly
+        run: |
+          git clone https://github.com/facebook/folly.git
+          cd folly
+          git checkout master
+
+      - name: Build and install Folly
+        run: |
+          cd folly
+          mkdir build
+          cd build
+          cmake ..
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig  # 更新共享库缓存
+
+      - name: Verify Folly installation
+        run: |
+          ldconfig -p | grep folly
+
+      - name: Build and run demo
+        run: |
+          echo '#include <folly/FBString.h>' > demo.cpp
+          echo 'int main() { folly::fbstring hello("Hello, Folly!"); return 0; }' >> demo.cpp
+          g++ demo.cpp -o demo -lfolly
+          ./demo
+
