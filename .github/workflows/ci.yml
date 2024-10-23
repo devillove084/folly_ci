@@ -13,51 +13,51 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git \
-            cmake \
-            make \
-            gcc \
-            g++ \
-            libboost-all-dev \
-            libfast-float-dev \
-            libdouble-conversion-dev \
-            libevent-dev \
-            libgflags-dev \
-            libgoogle-glog-dev \
-            libssl-dev \
-            libunwind-dev \
-            liblz4-dev \
-            liblzma-dev \
-            zlib1g-dev \
-            libsnappy-dev \
-            binutils-dev \
-            libjemalloc-dev \
-            libiberty-dev \
-            autoconf \
-            libtool \
-            python3-pip
-
-      - name: Clone Folly
+      - name: Build Folly
         run: |
           git clone https://github.com/facebook/folly.git
           cd folly
           sudo python3 build/fbcode_builder/getdeps.py --allow-system-packages install-system-deps --recursive folly
-          sudo python3 build/fbcode_builder/getdeps.py --allow-system-packages install-system-deps --recursive patchelf
+      
+      - name: Fetch and build dependencies
+        run: |
+          DEPENDENCIES=(
+            boost
+            ninja
+            cmake
+            double-conversion
+            fast_float
+            fmt
+            gflags
+            glog
+            googletest
+            libdwarf
+            libevent
+            zlib
+            lz4
+            snappy
+            zstd
+            autoconf
+            automake
+            libtool
+            libiberty
+            libsodium
+            libunwind
+            xz
+          )
+          for dep in "${DEPENDENCIES[@]}"; do
+            echo "Fetching $dep"
+            python3 build/fbcode_builder/getdeps.py --allow-system-packages fetch --no-tests $dep
+            echo "Building $dep"
+            python3 build/fbcode_builder/getdeps.py --allow-system-packages build --free-up-disk --no-tests $dep
+          done
 
       - name: Build and install Folly
         run: |
           cd folly
-          mkdir _build
-          cd _build
-          cmake ..
-          make -j$(nproc)
-          sudo make install
+          python3 build/fbcode_builder/getdeps.py --allow-system-packages build --src-dir=. folly  --project-install-prefix folly:/usr/local
           sudo ldconfig
-
+    
       - name: Verify Folly installation
         run: |
           ldconfig -p | grep folly
