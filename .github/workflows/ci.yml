@@ -45,6 +45,7 @@ jobs:
             libunwind
             xz
           )
+          cd folly
           for dep in "${DEPENDENCIES[@]}"; do
             echo "Fetching $dep"
             python3 build/fbcode_builder/getdeps.py --allow-system-packages fetch --no-tests $dep
