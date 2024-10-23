@@ -44,7 +44,6 @@ jobs:
         run: |
           git clone https://github.com/facebook/folly.git
           cd folly
-          git checkout master
 
       - name: Build and install Folly
         run: |
