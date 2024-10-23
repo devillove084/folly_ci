@@ -61,7 +61,7 @@ jobs:
     
       - name: Verify Folly installation
         run: |
-          ldconfig -p | grep folly
+          sudo ldconfig -p | grep folly
 
       - name: Build and run demo
         run: |
