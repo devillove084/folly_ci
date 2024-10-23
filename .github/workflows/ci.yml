@@ -59,9 +59,9 @@ jobs:
           python3 build/fbcode_builder/getdeps.py --allow-system-packages build --src-dir=. folly --no-tests  --project-install-prefix folly:/usr/local
           sudo ldconfig
     
-      - name: Verify Folly installation
-        run: |
-          sudo ldconfig -p | grep folly
+      # - name: Verify Folly installation
+      #   run: |
+      #     sudo ldconfig -p | grep folly
 
       - name: Build and run demo
         run: |
