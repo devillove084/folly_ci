@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
@@ -44,6 +44,8 @@ jobs:
         run: |
           git clone https://github.com/facebook/folly.git
           cd folly
+          sudo python3 build/fbcode_builder/getdeps.py --allow-system-packages install-system-deps --recursive folly
+          sudo python3 build/fbcode_builder/getdeps.py --allow-system-packages install-system-deps --recursive patchelf
 
       - name: Build and install Folly
         run: |
