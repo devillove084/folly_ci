@@ -13,15 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Install dependencies
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y \
-      #       git \
-      #       cmake \
-      #       make \
-      #       gcc \
-      #       g++ \
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            cmake \
+            make \
+            gcc \
+            g++ \
+            autoconf \
+            automake \
+            libtool \
+            python3-pip \
+            ninja \
+            libgflags-dev
       #       libboost-all-dev \
       #       libdouble-conversion-dev \
       #       libevent-dev \
@@ -36,9 +42,9 @@ jobs:
       #       binutils-dev \
       #       libjemalloc-dev \
       #       libiberty-dev \
-      #       autoconf \
-      #       libtool \
-      #       python3-pip \
+            # autoconf \
+            # libtool \
+            # python3-pip \
       #       libfmt-dev
 
       - name: Build Folly
@@ -51,12 +57,12 @@ jobs:
         run: |
           DEPENDENCIES=(
             boost
-            ninja
-            cmake
+            # ninja
+            # cmake
             double-conversion
             fast_float
             fmt
-            gflags
+            # gflags
             glog
             googletest
             libdwarf
@@ -65,9 +71,9 @@ jobs:
             lz4
             snappy
             zstd
-            autoconf
-            automake
-            libtool
+            # autoconf
+            # automake
+            # libtool
             libiberty
             libsodium
             libunwind
