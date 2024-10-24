@@ -128,7 +128,7 @@ jobs:
         run: |
           echo '#include <folly/FBString.h>' > demo.cpp
           echo 'int main() { folly::fbstring hello("Hello, Folly!"); return 0; }' >> demo.cpp
-          g++ demo.cpp -o demo -lfolly
+          g++ demo.cpp -o demo -I/usr/local/include -L/usr/local/lib -lfolly
           ./demo
 
       #     LIBS="-lfolly -ldouble-conversion -lgflags -lglog -lboost_context -lboost_regex -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lpthread -ldl -levent -lz -llz4 -lsnappy -lzstd -lunwind"
