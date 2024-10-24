@@ -26,7 +26,7 @@ jobs:
             automake \
             libtool \
             python3-pip \
-            ninja \
+            ninja-build \
             libgflags-dev
       #       libboost-all-dev \
       #       libdouble-conversion-dev \
