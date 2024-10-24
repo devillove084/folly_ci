@@ -47,29 +47,31 @@ jobs:
         run: |
           git clone https://github.com/fmtlib/fmt.git && cd fmt
           rm _build -rf; mkdir _build -p && cd _build
-          cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/ -DBUILD_SHARED_LIBS=TRUE -DBUILD_BENCHMARKS=OFF
+          # -DCMAKE_INSTALL_PREFIX=/usr/local/
+          cmake .. -DBUILD_SHARED_LIBS=TRUE -DBUILD_BENCHMARKS=OFF
           make -j$(nproc)
           sudo make install
+          sudo ldconfig
 
       - name: Build fast_float
         run: |
           git clone https://github.com/fastfloat/fast_float.git && cd fast_float
           rm _build -rf; mkdir _build -p && cd _build
-          cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/ -DBUILD_SHARED_LIBS=TRUE -DBUILD_BENCHMARKS=OFF
+          cmake .. -DBUILD_SHARED_LIBS=TRUE -DBUILD_BENCHMARKS=OFF
           make -j$(nproc)
           sudo make install
+          sudo ldconfig
 
       - name: Build Folly
         run: |
           git clone https://github.com/facebook/folly.git
           cd folly
-          # sudo python3 build/fbcode_builder/getdeps.py build --no-tests fast_float --install-dir /usr/local
-          # sudo python3 build/fbcode_builder/getdeps.py --allow-system-packages install-system-deps --recursive folly
           rm _build -rf
           mkdir _build && cd _build
-          cmake .. "-DCMAKE_INCLUDE_PATH=/usr/local/include" \
-          "-DCMAKE_LIBRARY_PATH=/usr/local/lib" \
-          -DCMAKE_INSTALL_PREFIX=/usr/local/ \
+          cmake .. \
+          # "-DCMAKE_INCLUDE_PATH=/usr/local/include" \
+          # "-DCMAKE_LIBRARY_PATH=/usr/local/lib" \
+          # -DCMAKE_INSTALL_PREFIX=/usr/local/ \
           -DFOLLY_SUPPORT_SHARED_LIBRARY=ON \
           -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
           -DBUILD_SHARED_LIBS=ON \
@@ -80,6 +82,7 @@ jobs:
           -DCMAKE_CXX_STANDARD_REQUIRED=ON
           make -j$(nproc)
           sudo make install
+          sudo ldconfig
       # - name: Fetch and build dependencies
       #   run: |
       #     DEPENDENCIES=(
@@ -128,7 +131,8 @@ jobs:
         run: |
           echo '#include <folly/FBString.h>' > demo.cpp
           echo 'int main() { folly::fbstring hello("Hello, Folly!"); return 0; }' >> demo.cpp
-          g++ demo.cpp -o demo -I/usr/local/include -L/usr/local/lib -lfolly
+          # -I/usr/local/include -L/usr/local/lib
+          g++ demo.cpp -o demo -lfolly
           ./demo
 
       #     LIBS="-lfolly -ldouble-conversion -lgflags -lglog -lboost_context -lboost_regex -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lpthread -ldl -levent -lz -llz4 -lsnappy -lzstd -lunwind"
