@@ -13,33 +13,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git \
-            cmake \
-            make \
-            gcc \
-            g++ \
-            libboost-all-dev \
-            libdouble-conversion-dev \
-            libevent-dev \
-            libgflags-dev \
-            libgoogle-glog-dev \
-            libssl-dev \
-            libunwind-dev \
-            liblz4-dev \
-            liblzma-dev \
-            zlib1g-dev \
-            libsnappy-dev \
-            binutils-dev \
-            libjemalloc-dev \
-            libiberty-dev \
-            autoconf \
-            libtool \
-            python3-pip \
-            libfmt-dev
+      # - name: Install dependencies
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y \
+      #       git \
+      #       cmake \
+      #       make \
+      #       gcc \
+      #       g++ \
+      #       libboost-all-dev \
+      #       libdouble-conversion-dev \
+      #       libevent-dev \
+      #       libgflags-dev \
+      #       libgoogle-glog-dev \
+      #       libssl-dev \
+      #       libunwind-dev \
+      #       liblz4-dev \
+      #       liblzma-dev \
+      #       zlib1g-dev \
+      #       libsnappy-dev \
+      #       binutils-dev \
+      #       libjemalloc-dev \
+      #       libiberty-dev \
+      #       autoconf \
+      #       libtool \
+      #       python3-pip \
+      #       libfmt-dev
 
       - name: Build Folly
         run: |
@@ -75,10 +75,10 @@ jobs:
           )
           cd folly
           for dep in "${DEPENDENCIES[@]}"; do
-            echo "Fetching $dep"
-            python3 build/fbcode_builder/getdeps.py --allow-system-packages fetch --no-tests $dep
-            echo "Building $dep"
-            python3 build/fbcode_builder/getdeps.py --allow-system-packages build --free-up-disk --no-tests $dep
+            # echo "Fetching $dep"
+            # python3 build/fbcode_builder/getdeps.py --allow-system-packages fetch --no-tests $dep
+            echo "Building and installing $dep"
+            sudo python3 build/fbcode_builder/getdeps.py --allow-system-packages build --free-up-disk --no-tests $dep --install-dir /usr/local
           done
 
       - name: Build and install Folly
