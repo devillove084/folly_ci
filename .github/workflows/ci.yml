@@ -27,71 +27,79 @@ jobs:
             libtool \
             python3-pip \
             ninja-build \
-            libgflags-dev
-      #       libboost-all-dev \
-      #       libdouble-conversion-dev \
-      #       libevent-dev \
-      #       libgflags-dev \
-      #       libgoogle-glog-dev \
-      #       libssl-dev \
-      #       libunwind-dev \
-      #       liblz4-dev \
-      #       liblzma-dev \
-      #       zlib1g-dev \
-      #       libsnappy-dev \
-      #       binutils-dev \
-      #       libjemalloc-dev \
-      #       libiberty-dev \
-            # autoconf \
-            # libtool \
-            # python3-pip \
-      #       libfmt-dev
+            libgflags-dev \
+            libboost-all-dev \
+            libdouble-conversion-dev \
+            libevent-dev \
+            libgflags-dev \
+            libgoogle-glog-dev \
+            libssl-dev \
+            libunwind-dev \
+            liblz4-dev \
+            liblzma-dev \
+            zlib1g-dev \
+            libsnappy-dev \
+            binutils-dev \
+            libjemalloc-dev \
+            libiberty-dev \
+      
+      - name: Build fmt
+        run: |
+          git clone https://github.com/fmtlib/fmt.git && cd fmt
+          rm _build -rf; mkdir _build -p && cd _build
+          cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/ -DBUILD_SHARED_LIBS=TRUE
+          make -j$(nproc)
+          sudo make install
 
       - name: Build Folly
         run: |
           git clone https://github.com/facebook/folly.git
           cd folly
           # sudo python3 build/fbcode_builder/getdeps.py --allow-system-packages install-system-deps --recursive folly
-      
-      - name: Fetch and build dependencies
-        run: |
-          DEPENDENCIES=(
-            boost
-            # ninja
-            # cmake
-            double-conversion
-            fast_float
-            fmt
-            # gflags
-            glog
-            googletest
-            libdwarf
-            libevent
-            zlib
-            lz4
-            snappy
-            zstd
-            # autoconf
-            # automake
-            # libtool
-            libiberty
-            libsodium
-            libunwind
-            xz
-          )
-          cd folly
-          for dep in "${DEPENDENCIES[@]}"; do
-            # echo "Fetching $dep"
-            # python3 build/fbcode_builder/getdeps.py --allow-system-packages fetch --no-tests $dep
-            echo "Building and installing $dep"
-            sudo python3 build/fbcode_builder/getdeps.py build --no-tests $dep --install-dir /usr/local
-          done
+          rm _build -rf
+          mkdir _build && cd _build
+          cmake .. "-DCMAKE_INCLUDE_PATH=/usr/local/include" "-DCMAKE_LIBRARY_PATH=/usr/local/lib" -DCMAKE_INSTALL_PREFIX=/usr/local/ -DFOLLY_SUPPORT_SHARED_LIBRARY=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+          make -j$(nproc)
+          sudo make install
+      # - name: Fetch and build dependencies
+      #   run: |
+      #     DEPENDENCIES=(
+      #       boost
+      #       # ninja
+      #       # cmake
+      #       double-conversion
+      #       fast_float
+      #       fmt
+      #       # gflags
+      #       glog
+      #       googletest
+      #       libdwarf
+      #       libevent
+      #       zlib
+      #       lz4
+      #       snappy
+      #       zstd
+      #       # autoconf
+      #       # automake
+      #       # libtool
+      #       libiberty
+      #       libsodium
+      #       libunwind
+      #       xz
+      #     )
+      #     cd folly
+      #     for dep in "${DEPENDENCIES[@]}"; do
+      #       # echo "Fetching $dep"
+      #       # python3 build/fbcode_builder/getdeps.py --allow-system-packages fetch --no-tests $dep
+      #       echo "Building and installing $dep"
+      #       sudo python3 build/fbcode_builder/getdeps.py build --no-tests $dep --install-dir /usr/local
+      #     done
 
-      - name: Build and install Folly
-        run: |
-          cd folly
-          sudo python3 build/fbcode_builder/getdeps.py build --src-dir=. folly --no-tests  --install-dir /usr/local
-          sudo ldconfig
+      # - name: Build and install Folly
+      #   run: |
+      #     cd folly
+      #     sudo python3 build/fbcode_builder/getdeps.py build --src-dir=. folly --no-tests  --install-dir /usr/local
+      #     sudo ldconfig
     
       # - name: Verify Folly installation
       #   run: |
