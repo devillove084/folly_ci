@@ -51,11 +51,19 @@ jobs:
           make -j$(nproc)
           sudo make install
 
+      - name: Build fast_float
+        run: |
+          git clone https://github.com/fastfloat/fast_float.git && cd fast_float
+          rm _build -rf; mkdir _build -p && cd _build
+          cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/ -DBUILD_SHARED_LIBS=TRUE -DBUILD_BENCHMARKS=OFF
+          make -j$(nproc)
+          sudo make install
+
       - name: Build Folly
         run: |
           git clone https://github.com/facebook/folly.git
           cd folly
-          sudo python3 build/fbcode_builder/getdeps.py build --no-tests fast_float --install-dir /usr/local
+          # sudo python3 build/fbcode_builder/getdeps.py build --no-tests fast_float --install-dir /usr/local
           # sudo python3 build/fbcode_builder/getdeps.py --allow-system-packages install-system-deps --recursive folly
           rm _build -rf
           mkdir _build && cd _build
